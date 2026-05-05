@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Hermes Hub</string>
+    <string name="title_activity_main">Hermes Hub</string>
+    <string name="package_name">com.jelix.hermeshub</string>
+    <string name="custom_url_scheme">com.jelix.hermeshub</string>
+</resources>
