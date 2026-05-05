@@ -366,6 +366,12 @@ function statusLabel(conn: TerminalConnectionInfo) {
   gap: 12px;
 }
 
+@media (min-width: 641px) and (max-width: 1039px) {
+  .terminal-actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 .terminal-modal {
   display: grid;
   gap: 18px;

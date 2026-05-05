@@ -1,7 +1,8 @@
 <template>
   <section class="page home-page">
     <header class="page-hero compact-hero">
-      <div class="hero-icon"><Rocket :size="42" /></div>
+      <div class="hero-icon hero-icon-mobile"><span class="home-brand-mark">J</span></div>
+      <div class="hero-icon hero-icon-desktop"><Rocket :size="42" /></div>
       <div>
         <h1 class="page-title">Space Jelix</h1>
         <p class="page-subtitle">进入核心工作入口</p>
@@ -73,6 +74,31 @@ function openApp(app: AppInfo) {
 
 .compact-hero {
   margin-bottom: 24px;
+}
+
+.hero-icon-mobile {
+  display: grid;
+}
+
+.hero-icon-desktop {
+  display: none;
+}
+
+.home-brand-mark {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--accent);
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+@media (min-width: 860px) {
+  .hero-icon-mobile {
+    display: none;
+  }
+
+  .hero-icon-desktop {
+    display: grid;
+  }
 }
 
 .home-toolbar {

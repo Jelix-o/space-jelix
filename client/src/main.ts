@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import { Capacitor } from '@capacitor/core'
 import router from './router'
 import App from './App.vue'
 import './style.css'
@@ -18,6 +19,12 @@ try {
   }
 } catch {
   // Keep CSS defaults when settings are malformed.
+}
+
+if (Capacitor.isNativePlatform()) {
+  import('@capacitor/status-bar').then(({ StatusBar }) => {
+    StatusBar.setBackgroundColor({ color: '#6d35f6' })
+  })
 }
 
 const app = createApp(App)

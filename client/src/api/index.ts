@@ -16,7 +16,7 @@ export function invalidateBaseUrlCache() {
   cachedBaseUrl = null
 }
 
-function baseUrl(): string {
+export function getBaseUrl(): string {
   if (cachedBaseUrl !== null) return cachedBaseUrl
   try {
     const saved = localStorage.getItem('hermes-hub-settings')
@@ -36,7 +36,7 @@ function baseUrl(): string {
 }
 
 async function request<T>(path: string, opts: RequestInit = {}): Promise<T> {
-  const res = await fetch(`${baseUrl()}${path}`, {
+  const res = await fetch(`${getBaseUrl()}${path}`, {
     headers: { 'Content-Type': 'application/json', ...opts.headers },
     ...opts,
   })
@@ -187,7 +187,7 @@ export const terminalsApi = {
   uploadKey: async (id: number, file: File): Promise<{ connection: TerminalConnectionInfo; keyName: string }> => {
     const formData = new FormData()
     formData.append('key', file)
-    const res = await fetch(`${baseUrl()}/api/terminals/${id}/upload-key`, {
+    const res = await fetch(`${getBaseUrl()}/api/terminals/${id}/upload-key`, {
       method: 'POST',
       body: formData,
     })

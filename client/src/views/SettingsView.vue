@@ -738,12 +738,13 @@ function providerTypeLabel(type: ProviderType) {
 }
 
 .provider-row .manage-actions {
-  flex-wrap: nowrap;
-  min-width: 344px;
+  flex-wrap: wrap;
+  min-width: 0;
 }
 
 .provider-row .manage-actions button {
-  min-width: 108px;
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .manage-actions {
@@ -1040,7 +1041,7 @@ function providerTypeLabel(type: ProviderType) {
 
 .check {
   position: absolute;
-  top: 12px;
+  bottom: 12px;
   right: 12px;
   color: var(--accent);
 }

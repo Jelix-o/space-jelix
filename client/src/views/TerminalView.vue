@@ -29,6 +29,7 @@ import { WebLinksAddon } from '@xterm/addon-web-links'
 import '@xterm/xterm/css/xterm.css'
 import { ArrowLeft, Play, Square } from 'lucide-vue-next'
 import { useConnectionsStore } from '@/stores/connections'
+import { getBaseUrl } from '@/api'
 
 const route = useRoute()
 const router = useRouter()
@@ -110,9 +111,16 @@ onBeforeUnmount(() => {
 })
 
 function getWsUrl() {
-  const loc = window.location
-  const protocol = loc.protocol === 'https:' ? 'wss:' : 'ws:'
-  return `${protocol}//${loc.host}/terminal`
+  const base = getBaseUrl()
+  try {
+    const u = new URL(base)
+    const protocol = u.protocol === 'https:' ? 'wss:' : 'ws:'
+    return `${protocol}//${u.host}/terminal`
+  } catch {
+    const loc = window.location
+    const protocol = loc.protocol === 'https:' ? 'wss:' : 'ws:'
+    return `${protocol}//${loc.host}/terminal`
+  }
 }
 
 function connect() {

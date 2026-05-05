@@ -32,8 +32,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { RouterLink, RouterView, useRoute } from 'vue-router'
+import { computed, onMounted, onUnmounted } from 'vue'
+import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
+import { Capacitor } from '@capacitor/core'
 import { BotMessageSquare, Home, Image, Settings, TerminalSquare } from 'lucide-vue-next'
 import Toast from '@/components/Toast.vue'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
@@ -48,6 +49,7 @@ const confirm = useConfirm()
 const browser = useBrowser()
 
 const route = useRoute()
+const router = useRouter()
 const hideAppNav = computed(() => route.meta.hideAppNav === true)
 
 const navItems = [
@@ -57,6 +59,28 @@ const navItems = [
   { to: '/connections', label: '终端', icon: TerminalSquare },
   { to: '/settings', label: '设置', icon: Settings },
 ]
+
+let backButtonListener: any = null
+
+onMounted(async () => {
+  if (Capacitor.isNativePlatform()) {
+    const { App } = await import('@capacitor/app')
+    backButtonListener = App.addListener('backButton', async () => {
+      if (route.path === '/') {
+        const confirmed = await confirm.confirm('退出应用', '确定要退出 Space Jelix 吗？', 'warning')
+        if (confirmed) {
+          App.exitApp()
+        }
+      } else {
+        router.back()
+      }
+    })
+  }
+})
+
+onUnmounted(() => {
+  backButtonListener?.remove()
+})
 </script>
 
 <style scoped>
