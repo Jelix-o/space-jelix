@@ -85,7 +85,6 @@
             >
               <component :is="option.icon" :size="34" />
               <span>{{ option.label }}</span>
-              <CheckCircle2 v-if="settings.theme === option.value" class="check" :size="24" />
             </button>
           </div>
         </section>
@@ -265,7 +264,6 @@ import {
   AppWindow,
   ArrowLeft,
   Bot,
-  CheckCircle2,
   ChevronRight,
   Laptop,
   Moon,
@@ -1036,14 +1034,12 @@ function providerTypeLabel(type: ProviderType) {
 .theme-option.active {
   color: var(--accent);
   border-color: var(--accent);
-  box-shadow: inset 0 0 0 1px var(--accent), var(--shadow-soft);
+  box-shadow: inset 0 0 0 2px var(--accent), var(--shadow-soft);
+  background: var(--accent-soft);
 }
 
 .check {
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
-  color: var(--accent);
+  display: none;
 }
 
 .model-picker {

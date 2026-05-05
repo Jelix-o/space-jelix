@@ -22,8 +22,9 @@ try {
 }
 
 if (Capacitor.isNativePlatform()) {
-  import('@capacitor/status-bar').then(({ StatusBar }) => {
+  import('@capacitor/status-bar').then(({ StatusBar, Style }) => {
     StatusBar.setBackgroundColor({ color: '#6d35f6' })
+    StatusBar.setStyle({ style: Style.Dark })
   })
 }
 
