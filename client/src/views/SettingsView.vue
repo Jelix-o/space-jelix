@@ -291,12 +291,14 @@ import { useConfirm } from '@/composables/useConfirm'
 import { useModalLock } from '@/composables/useModalLock'
 import ModelPicker from '@/components/ModelPicker.vue'
 import { useChatStore } from '@/stores/chat'
+import { useAppsStore } from '@/stores/apps'
 import { APP_CATEGORIES, PROVIDER_TYPES, type AppCategory, type AppInfo, type AppSettings, type ProviderInfo, type ProviderModel, type ProviderType, type ThemeMode } from '@/types'
 
 type PanelKey = 'index' | 'apps' | 'providers' | 'preferences'
 
 const route = useRoute()
 const chat = useChatStore()
+const appsStore = useAppsStore()
 const toast = useToast()
 const { confirm } = useConfirm()
 const activePanel = ref<PanelKey>('index')
@@ -465,6 +467,7 @@ async function submitApp() {
     else await appsApi.create(payload)
     closeAppModal()
     await loadApps()
+    appsStore.fetchApps()
   } catch (e) {
     modalError.value = e instanceof Error ? e.message : String(e)
   } finally {
@@ -478,6 +481,7 @@ async function deleteApp(app: AppInfo) {
   try {
     await appsApi.delete(app.id)
     await loadApps()
+    appsStore.fetchApps()
   } catch (e) {
     toast.error(e instanceof Error ? e.message : '删除失败')
   }

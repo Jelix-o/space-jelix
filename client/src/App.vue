@@ -2,7 +2,7 @@
   <div class="app-shell" :class="{ 'nav-hidden': hideAppNav }">
     <aside v-if="!hideAppNav" class="side-nav">
       <RouterLink class="brand" to="/">
-        <span class="brand-mark">H</span>
+        <span class="brand-mark">J</span>
         <span>Space Jelix</span>
       </RouterLink>
       <nav class="nav-list">
