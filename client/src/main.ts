@@ -23,6 +23,7 @@ try {
 
 if (Capacitor.isNativePlatform()) {
   import('@capacitor/status-bar').then(({ StatusBar, Style }) => {
+    StatusBar.setOverlaysWebView({ overlay: false })
     StatusBar.setBackgroundColor({ color: '#6d35f6' })
     StatusBar.setStyle({ style: Style.Dark })
   })
