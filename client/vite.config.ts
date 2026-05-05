@@ -11,6 +11,7 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    allowedHosts: ['space.9958.uk'],
     proxy: {
       '/api': {
         target: 'http://localhost:3002',
