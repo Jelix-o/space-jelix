@@ -57,7 +57,7 @@ body {
   margin: 0;
   width: 100%;
   min-width: 320px;
-  min-height: 100vh;
+  min-height: 100dvh;
   overflow-x: hidden;
   background:
     radial-gradient(circle at 88% 5%, rgba(178, 135, 255, 0.42), transparent 28rem),

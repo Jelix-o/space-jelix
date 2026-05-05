@@ -22,7 +22,7 @@
 
     <template v-else>
       <div class="panel-toolbar">
-        <button type="button" class="secondary-btn" @click="activePanel = 'index'"><ArrowLeft :size="22" />返回</button>
+        <button type="button" class="secondary-btn" @click="openPanel('index')"><ArrowLeft :size="22" />返回</button>
         <button v-if="activePanel === 'apps'" type="button" class="primary-btn" @click="openAppCreate"><Plus :size="22" />添加应用</button>
         <button v-if="activePanel === 'providers'" type="button" class="primary-btn" @click="openProviderCreate"><Plus :size="22" />添加服务商</button>
       </div>
@@ -259,7 +259,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch, type Component } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import {
   AppWindow,
   ArrowLeft,
@@ -295,6 +295,7 @@ import { APP_CATEGORIES, PROVIDER_TYPES, type AppCategory, type AppInfo, type Ap
 type PanelKey = 'index' | 'apps' | 'providers' | 'preferences'
 
 const route = useRoute()
+const router = useRouter()
 const chat = useChatStore()
 const appsStore = useAppsStore()
 const toast = useToast()
@@ -379,9 +380,19 @@ onMounted(async () => {
     settings.defaultModel = chat.models[0].id
   }
   applySettings()
-  const panel = route.query.panel
-  if (panel === 'providers') activePanel.value = 'providers'
-  if (panel === 'apps') activePanel.value = 'apps'
+  const panel = route.query.panel as string
+  if (panel && ['providers', 'apps', 'preferences'].includes(panel)) {
+    activePanel.value = panel as PanelKey
+  }
+})
+
+watch(() => route.query.panel, (panel) => {
+  const p = panel as string
+  if (p && ['providers', 'apps', 'preferences'].includes(p)) {
+    activePanel.value = p as PanelKey
+  } else {
+    activePanel.value = 'index'
+  }
 })
 
 watch(settings, () => {
@@ -394,6 +405,7 @@ useModalLock(anyModalOpen)
 
 function openPanel(panel: PanelKey) {
   activePanel.value = panel
+  router.replace({ query: panel === 'index' ? {} : { panel } })
 }
 
 function resolvedTheme() {
