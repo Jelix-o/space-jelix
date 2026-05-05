@@ -9,6 +9,9 @@ const config: CapacitorConfig = {
       backgroundColor: '#6d35f6',
       style: 'DARK',
     },
+    Keyboard: {
+      resize: 'none',
+    },
   },
 };
 

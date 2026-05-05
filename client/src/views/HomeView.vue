@@ -126,9 +126,11 @@ function openApp(app: AppInfo) {
 
 .search-shell input {
   border: 0;
+  outline: none;
   background: transparent;
   min-width: 0;
   color: var(--text-strong);
+  -webkit-tap-highlight-color: transparent;
 }
 
 .search-shell input::placeholder {
