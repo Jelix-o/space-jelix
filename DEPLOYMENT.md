@@ -75,8 +75,17 @@ server {
 
 ## 验收清单
 
+- 未登录访问任意页面 → 跳转登录页，输入正确密码后进入首页。
+- 刷新页面保持登录状态（JWT token 30 天有效）。
+- API 不带 token → 返回 401。
 - PC、平板、手机浏览器访问 `https://space.9958.uk`，刷新任意前端路由不 404。
 - 访问 `https://space.9958.uk/api/health` 返回 `status: ok`。
 - 终端页面可以建立 `/terminal` WebSocket 连接。
 - 小米全面屏 APK 下，浅色主题顶部状态栏为淡紫背景，深色主题为深色背景，状态栏文字清晰。
 - 设置页、生成页、聊天列表等带底部 tab 的页面唤起输入法时，底部 tab 不再浮到输入框上方。
+
+## v1.0 Release
+
+GitHub Release: https://github.com/Jelix-o/space-jelix/releases/tag/v1.0
+
+APK 下载: `app-debug.apk`

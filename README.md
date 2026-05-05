@@ -1,9 +1,12 @@
 # 🚀 Space Jelix
 
+> **v1.0** — [GitHub Releases](https://github.com/Jelix-o/space-jelix/releases)
+
 个人 AI 应用集合平台 — 管理应用、AI 对话、终端连接、一站式访问。
 
 ## ✨ 功能特性
 
+- 🔐 **登录认证** — JWT 单密码认证，保护数据安全
 - 📱 **应用管理** — 添加、编辑、删除应用，支持自定义图标和分类
 - 💬 **AI 对话** — 支持多个 AI 模型（MiMo、Hermes、GPT、Claude 等），会话管理
 - 🖥️ **终端连接** — SSH 终端管理，支持密码/密钥认证，内置网页终端
@@ -83,8 +86,9 @@ hermes-hub/
 │   ├── src/
 │   │   ├── index.ts       # Express 服务器入口
 │   │   ├── database.ts    # SQLite 数据库初始化
+│   │   ├── auth.ts        # JWT 登录认证中间件
 │   │   └── routes/        # API 路由 (apps, chat, hermes, providers, terminals, proxy)
-│   └── .env               # 配置文件
+│   └── .env               # 配置文件 (AUTH_PASSWORD, API keys)
 ├── DEPLOYMENT.md           # 部署指南和验收清单
 └── README.md
 ```
@@ -114,6 +118,7 @@ hermes-hub/
 
 ```env
 PORT=3002
+AUTH_PASSWORD=your-password        # 登录密码，未设置则跳过认证
 MIMO_API_URL=http://127.0.0.1:8317/v1
 MIMO_API_KEY=your-api-key
 MIMO_MODEL=mimo-v2.5-pro
