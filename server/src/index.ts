@@ -11,6 +11,7 @@ import terminalsRouter from './routes/terminals';
 import imagesRouter from './routes/images';
 import proxyRouter from './routes/proxy';
 import { setupTerminalWs } from './terminal-ws';
+import { authMiddleware, createAuthRouter } from './auth';
 
 dotenv.config();
 
@@ -40,12 +41,18 @@ function parseCorsOrigin(raw?: string): CorsOptions['origin'] {
   };
 }
 
-// Health check
+// Health check (no auth)
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', version: '1.0.0', timestamp: new Date().toISOString() });
 });
 
-// Routes
+// Auth routes (no auth required)
+app.use('/api/auth', createAuthRouter());
+
+// Auth middleware for all other API routes
+app.use('/api', authMiddleware);
+
+// Protected routes
 app.use('/api/apps', appsRouter);
 app.use('/api/chat', chatRouter);
 app.use('/api/hermes', hermesRouter);

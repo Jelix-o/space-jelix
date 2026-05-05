@@ -12,6 +12,8 @@ import type {
 const DEFAULT_BASE = import.meta.env.VITE_API_URL ?? ''
 let cachedBaseUrl: string | null = null
 
+export const AUTH_TOKEN_KEY = 'hermes-hub-token'
+
 export function invalidateBaseUrlCache() {
   cachedBaseUrl = null
 }
@@ -36,10 +38,19 @@ export function getBaseUrl(): string {
 }
 
 async function request<T>(path: string, opts: RequestInit = {}): Promise<T> {
-  const res = await fetch(`${getBaseUrl()}${path}`, {
-    headers: { 'Content-Type': 'application/json', ...opts.headers },
-    ...opts,
-  })
+  const headers: Record<string, string> = { 'Content-Type': 'application/json', ...opts.headers as Record<string, string> }
+  const token = localStorage.getItem(AUTH_TOKEN_KEY)
+  if (token) headers['Authorization'] = `Bearer ${token}`
+
+  const res = await fetch(`${getBaseUrl()}${path}`, { headers, ...opts })
+
+  if (res.status === 401) {
+    localStorage.removeItem(AUTH_TOKEN_KEY)
+    if (window.location.pathname !== '/login') {
+      window.location.href = '/login'
+    }
+    throw new Error('Unauthorized')
+  }
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}))
@@ -237,4 +248,13 @@ export const imagesApi = {
       body: JSON.stringify({ model, prompt, size }),
     }),
   list: () => request<{ images: { id: number; model: string; prompt: string; size: string; url: string; created_at: string }[] }>('/api/images'),
+}
+
+export const authApi = {
+  login: (password: string) =>
+    request<{ token: string }>('/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ password }),
+    }),
+  check: () => request<{ ok: boolean }>('/api/auth/check'),
 }

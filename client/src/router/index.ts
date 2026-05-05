@@ -1,8 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { AUTH_TOKEN_KEY } from '@/api'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    { path: '/login', name: 'login', component: () => import('@/views/LoginView.vue'), meta: { title: '登录', hideAppNav: true } },
     { path: '/', name: 'home', component: () => import('@/views/HomeView.vue'), meta: { title: '应用' } },
     { path: '/app/:id', name: 'app-detail', component: () => import('@/views/AppDetailView.vue'), meta: { title: '应用详情' } },
     { path: '/chat', name: 'chat', component: () => import('@/views/ChatView.vue'), meta: { title: '对话' } },
@@ -25,6 +27,16 @@ const router = createRouter({
     { path: '/settings', name: 'settings', component: () => import('@/views/SettingsView.vue'), meta: { title: '设置' } },
     { path: '/:pathMatch(.*)*', redirect: '/' },
   ],
+})
+
+router.beforeEach((to) => {
+  const token = localStorage.getItem(AUTH_TOKEN_KEY)
+  if (to.name !== 'login' && !token) {
+    return { name: 'login' }
+  }
+  if (to.name === 'login' && token) {
+    return { name: 'home' }
+  }
 })
 
 router.afterEach((to) => {
