@@ -1,6 +1,6 @@
 import http from 'http';
 import express from 'express';
-import cors from 'cors';
+import cors, { type CorsOptions } from 'cors';
 import dotenv from 'dotenv';
 import { initializeDatabase } from './database';
 import appsRouter from './routes/apps';
@@ -16,10 +16,29 @@ dotenv.config();
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '3002', 10);
+const corsOrigin = parseCorsOrigin(process.env.CORS_ORIGIN);
 
 // Middleware
-app.use(cors({ origin: process.env.CORS_ORIGIN || '*' }));
+app.use(cors({ origin: corsOrigin }));
 app.use(express.json({ limit: '10mb' }));
+
+function parseCorsOrigin(raw?: string): CorsOptions['origin'] {
+  const origins = raw
+    ?.split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+  if (!origins?.length || origins.includes('*')) return '*';
+
+  return (origin, callback) => {
+    if (!origin || origins.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error(`Origin ${origin} is not allowed by CORS`));
+  };
+}
 
 // Health check
 app.get('/api/health', (req, res) => {

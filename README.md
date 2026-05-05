@@ -1,20 +1,23 @@
-# 🚀 Hermes Hub
+# 🚀 Space Jelix
 
-个人 AI 应用集合平台 — 管理应用、连接 AI 模型、一站式访问。
+个人 AI 应用集合平台 — 管理应用、AI 对话、终端连接、一站式访问。
 
 ## ✨ 功能特性
 
 - 📱 **应用管理** — 添加、编辑、删除应用，支持自定义图标和分类
-- 💬 **AI 对话** — 支持多个 AI 模型（MiMo、Hermes、GPT、Claude 等）
-- 🔗 **连接管理** — 连接 Hermes Agent 和 OpenClaw，统一管理
-- 🌐 **网页访问** — 所有应用一键打开
-- 📲 **移动适配** — 响应式设计，支持手机浏览器和 Android APK
+- 💬 **AI 对话** — 支持多个 AI 模型（MiMo、Hermes、GPT、Claude 等），会话管理
+- 🖥️ **终端连接** — SSH 终端管理，支持密码/密钥认证，内置网页终端
+- 🎨 **AI 生图** — 支持 DALL-E、GPT-Image、Flux 等生图模型
+- ⚙️ **服务商管理** — 配置多个 AI 服务商和模型列表
+- 🌐 **内置浏览器** — 应用内 iframe 打开外部链接
+- 📲 **Android APK** — 全面屏适配、原生状态栏、键盘弹起处理、返回键多层回退
 
 ## 🛠️ 技术栈
 
-- **前端**: Vue 3 + TypeScript + Vite + Pinia
-- **后端**: Node.js + Express + TypeScript + SQLite
-- **移动**: Capacitor (Android)
+- **前端**: Vue 3 + TypeScript + Vite + Pinia + Vue Router
+- **后端**: Node.js + Express + TypeScript + SQLite (node:sqlite)
+- **移动**: Capacitor 8 (Android)，支持 edge-to-edge 全面屏
+- **部署**: Nginx 反向代理 + Cloudflare DNS
 
 ## 🚀 快速开始
 
@@ -44,8 +47,8 @@ npx vite --host 0.0.0.0
 
 ### 前置条件
 
-- Java JDK 17+
-- Android Studio 或 Android SDK
+- Java JDK 21+
+- Android SDK (platform-tools, platforms;android-35, build-tools;35.0.0)
 - Node.js 18+
 
 ### 构建步骤
@@ -65,19 +68,24 @@ hermes-hub/
 ├── client/                 # Vue 3 前端
 │   ├── src/
 │   │   ├── api/           # API 客户端
-│   │   ├── components/    # 通用组件
-│   │   ├── stores/        # Pinia 状态管理
-│   │   ├── views/         # 页面组件
-│   │   ├── types/         # TypeScript 类型
+│   │   ├── components/    # 通用组件 (AppSelect, BrowserOverlay, ConfirmDialog, ModelSheet)
+│   │   ├── composables/   # 组合式函数 (useBackButton, useBrowser, useConfirm, useContextMenu,
+│   │   │                   #   useKeyboardInset, useModalLock, useNativeBackClose, useToast)
+│   │   ├── stores/        # Pinia 状态管理 (apps, chat, connections, providers)
+│   │   ├── utils/         # 工具函数 (nativeAppearance, openUrl)
+│   │   ├── views/         # 页面组件 (Home, Chat, ChatSession, Connections, Terminal,
+│   │   │                   #   Generate, Settings, AppDetail)
+│   │   ├── types/         # TypeScript 类型定义
 │   │   └── router/        # 路由配置
 │   ├── android/           # Capacitor Android 项目
 │   └── build-apk.sh       # APK 构建脚本
 ├── server/                 # Node.js 后端
 │   ├── src/
-│   │   ├── index.ts       # Express 服务器
-│   │   ├── database.ts    # SQLite 初始化
-│   │   └── routes/        # API 路由
+│   │   ├── index.ts       # Express 服务器入口
+│   │   ├── database.ts    # SQLite 数据库初始化
+│   │   └── routes/        # API 路由 (apps, chat, hermes, providers, terminals, proxy)
 │   └── .env               # 配置文件
+├── DEPLOYMENT.md           # 部署指南和验收清单
 └── README.md
 ```
 

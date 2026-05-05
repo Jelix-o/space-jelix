@@ -13,9 +13,11 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { X } from 'lucide-vue-next'
+import { useNativeBackClose } from '@/composables/useNativeBackClose'
 
-defineProps<{
+const props = defineProps<{
   visible: boolean
   url: string
 }>()
@@ -27,6 +29,8 @@ const emit = defineEmits<{
 function close() {
   emit('update:visible', false)
 }
+
+useNativeBackClose(computed(() => props.visible), close)
 </script>
 
 <style scoped>
@@ -37,6 +41,7 @@ function close() {
   display: flex;
   flex-direction: column;
   background: var(--panel-strong);
+  padding-top: var(--app-safe-top);
 }
 
 .browser-bar {

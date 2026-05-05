@@ -21,6 +21,18 @@
   --nav-size: 88px;
   --sidebar-size: 244px;
   --font-size: 16px;
+  --system-bar-bg: #efe8ff;
+  --app-background:
+    radial-gradient(circle at 88% 5%, rgba(178, 135, 255, 0.42), transparent 28rem),
+    radial-gradient(circle at 5% 26%, rgba(214, 205, 255, 0.42), transparent 22rem),
+    linear-gradient(145deg, var(--bg), var(--bg-soft));
+  --app-safe-top: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
+  --app-safe-right: var(--safe-area-inset-right, env(safe-area-inset-right, 0px));
+  --app-safe-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
+  --app-safe-left: var(--safe-area-inset-left, env(safe-area-inset-left, 0px));
+  --app-viewport-height: calc(100dvh - var(--app-safe-top));
+  --keyboard-offset: 0px;
+  --keyboard-nav-offset: 0px;
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
   --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-family: var(--sans);
@@ -36,6 +48,11 @@
 :root[data-theme='dark'] {
   --bg: #111320;
   --bg-soft: #171a2a;
+  --system-bar-bg: #111320;
+  --app-background:
+    radial-gradient(circle at 78% -4%, rgba(124, 84, 255, 0.26), transparent 24rem),
+    radial-gradient(circle at 8% 7%, rgba(109, 53, 246, 0.18), transparent 22rem),
+    linear-gradient(180deg, #211a3e 0%, #17192b 34%, #111320 100%);
   --panel: rgba(26, 29, 45, 0.82);
   --panel-strong: rgba(28, 31, 48, 0.96);
   --text: #aab2c5;
@@ -57,12 +74,12 @@ body {
   margin: 0;
   width: 100%;
   min-width: 320px;
-  min-height: 100dvh;
+  min-height: var(--app-viewport-height);
+  padding-top: var(--app-safe-top);
+  padding-left: var(--app-safe-left);
+  padding-right: var(--app-safe-right);
   overflow-x: hidden;
-  background:
-    radial-gradient(circle at 88% 5%, rgba(178, 135, 255, 0.42), transparent 28rem),
-    radial-gradient(circle at 5% 26%, rgba(214, 205, 255, 0.42), transparent 22rem),
-    linear-gradient(145deg, var(--bg), var(--bg-soft));
+  background: var(--app-background);
 }
 
 html.modal-open,
@@ -75,6 +92,7 @@ html,
 #app {
   width: 100%;
   min-height: 100%;
+  background: var(--app-background);
   overflow-x: hidden;
 }
 
@@ -128,7 +146,7 @@ p {
   width: 100%;
   max-width: 1120px;
   margin: 0 auto;
-  padding: 44px clamp(16px, 4vw, 34px) calc(var(--nav-size) + 32px);
+  padding: 44px clamp(16px, 4vw, 34px) calc(var(--nav-size) + var(--app-safe-bottom) + 32px);
   overflow-x: hidden;
 }
 
@@ -390,7 +408,7 @@ p {
 
 @media (max-width: 520px) {
   .page {
-    padding: 26px 14px calc(var(--nav-size) + 34px);
+    padding: 26px 14px calc(var(--nav-size) + var(--app-safe-bottom) + 34px);
   }
 
   .page-hero {

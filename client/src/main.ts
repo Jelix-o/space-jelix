@@ -1,33 +1,16 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import { Capacitor } from '@capacitor/core'
 import router from './router'
 import App from './App.vue'
 import './style.css'
+import { applyDocumentAppearance, readStoredAppearanceSettings, subscribeSystemThemeChange } from './utils/nativeAppearance'
 
-try {
-  const saved = localStorage.getItem('hermes-hub-settings')
-  const settings = saved ? JSON.parse(saved) : null
-  const theme = settings?.theme === 'dark'
-    ? 'dark'
-    : settings?.theme === 'light'
-      ? 'light'
-      : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-  document.documentElement.dataset.theme = theme
-  if (settings?.fontSize) {
-    document.documentElement.style.setProperty('--font-size', `${settings.fontSize}px`)
-  }
-} catch {
-  // Keep CSS defaults when settings are malformed.
-}
-
-if (Capacitor.isNativePlatform()) {
-  import('@capacitor/status-bar').then(({ StatusBar, Style }) => {
-    StatusBar.setOverlaysWebView({ overlay: true })
-    StatusBar.setBackgroundColor({ color: '#6d35f6' })
-    StatusBar.setStyle({ style: Style.Dark })
-  })
-}
+const initialAppearance = readStoredAppearanceSettings()
+applyDocumentAppearance(initialAppearance.theme, initialAppearance.fontSize)
+subscribeSystemThemeChange(() => {
+  const settings = readStoredAppearanceSettings()
+  if (settings.theme === 'auto') applyDocumentAppearance(settings.theme, settings.fontSize)
+})
 
 const app = createApp(App)
 

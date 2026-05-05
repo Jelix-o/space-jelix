@@ -1,51 +1,63 @@
+import { Capacitor, type PluginListenerHandle } from '@capacitor/core'
 import { useRoute, useRouter } from 'vue-router'
 import { useBrowser } from '@/composables/useBrowser'
 import { useConfirm } from '@/composables/useConfirm'
-import { Capacitor } from '@capacitor/core'
+import { useContextMenu } from '@/composables/useContextMenu'
+import { requestNativeBackClose } from '@/composables/useNativeBackClose'
+
+const ROOT_PATHS = new Set(['/', '/chat', '/generate', '/connections', '/settings'])
 
 export function useBackButton() {
   const route = useRoute()
   const router = useRouter()
   const browser = useBrowser()
   const confirm = useConfirm()
+  const contextMenu = useContextMenu()
 
-  let listener: any = null
+  let listener: PluginListenerHandle | null = null
 
   async function register() {
     if (!Capacitor.isNativePlatform()) return
 
     const { App } = await import('@capacitor/app')
 
-    listener = App.addListener('backButton', async () => {
-      // 1. BrowserOverlay open → close it
+    listener = await App.addListener('backButton', async () => {
       if (browser.state.visible) {
         browser.close()
         return
       }
 
-      // 2. Confirm dialog open → reject it
       if (confirm.state.show) {
         confirm.onResult(false)
         return
       }
 
-      // 3. Settings sub-panel → go back to settings index
+      if (contextMenu.state.visible) {
+        contextMenu.close()
+        return
+      }
+
+      if (requestNativeBackClose()) {
+        return
+      }
+
       if (route.path === '/settings' && route.query.panel) {
         router.replace('/settings')
         return
       }
 
-      // 4. Has history and not on home → go back
-      if (route.path !== '/' && window.history.length > 1) {
+      if (ROOT_PATHS.has(route.path)) {
+        const confirmed = await confirm.confirm('退出应用', '确定要退出 Space Jelix 吗？', 'warning')
+        if (confirmed) App.exitApp()
+        return
+      }
+
+      if (window.history.length > 1) {
         router.back()
         return
       }
 
-      // 5. On home → confirm exit
-      const confirmed = await confirm.confirm('退出应用', '确定要退出 Space Jelix 吗？', 'warning')
-      if (confirmed) {
-        App.exitApp()
-      }
+      router.replace(getFallbackPath(route.path))
     })
   }
 
@@ -55,4 +67,11 @@ export function useBackButton() {
   }
 
   return { register, unregister }
+}
+
+function getFallbackPath(path: string) {
+  if (path.startsWith('/app/')) return '/'
+  if (path.startsWith('/chat/')) return '/chat'
+  if (path.startsWith('/terminal/')) return '/connections'
+  return '/'
 }

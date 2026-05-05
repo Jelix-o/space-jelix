@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6d35f6</color>
-    <color name="colorPrimaryDark">#6d35f6</color>
+    <color name="colorPrimary">#efe8ff</color>
+    <color name="colorPrimaryDark">#efe8ff</color>
     <color name="colorAccent">#9c5cff</color>
+    <color name="systemBarBackground">#efe8ff</color>
 </resources>

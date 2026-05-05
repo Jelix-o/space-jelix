@@ -6,7 +6,7 @@
         <span>Space Jelix</span>
       </RouterLink>
       <nav class="nav-list">
-        <RouterLink v-for="item in navItems" :key="item.to" class="nav-link" :to="item.to">
+        <RouterLink v-for="item in navItems" :key="item.to" class="nav-link" :to="item.to" replace>
           <component :is="item.icon" :size="22" />
           <span>{{ item.label }}</span>
         </RouterLink>
@@ -18,7 +18,7 @@
     </main>
 
     <nav v-if="!hideAppNav" class="bottom-nav" aria-label="主导航">
-      <RouterLink v-for="item in navItems" :key="item.to" class="bottom-link" :to="item.to">
+      <RouterLink v-for="item in navItems" :key="item.to" class="bottom-link" :to="item.to" replace>
         <component :is="item.icon" :size="26" />
         <span>{{ item.label }}</span>
       </RouterLink>
@@ -43,6 +43,7 @@ import { useToast } from '@/composables/useToast'
 import { useConfirm } from '@/composables/useConfirm'
 import { useBrowser } from '@/composables/useBrowser'
 import { useBackButton } from '@/composables/useBackButton'
+import { useKeyboardInset } from '@/composables/useKeyboardInset'
 
 const toast = useToast()
 const confirm = useConfirm()
@@ -60,25 +61,28 @@ const navItems = [
 ]
 
 const backButton = useBackButton()
+const keyboardInset = useKeyboardInset()
 
 onMounted(() => {
   backButton.register()
+  keyboardInset.register()
 })
 
 onUnmounted(() => {
   backButton.unregister()
+  void keyboardInset.unregister()
 })
 </script>
 
 <style scoped>
 .app-shell {
-  min-height: 100dvh;
+  min-height: var(--app-viewport-height);
   width: 100%;
   overflow-x: hidden;
 }
 
 .main-stage {
-  min-height: 100dvh;
+  min-height: var(--app-viewport-height);
   min-width: 0;
   overflow-x: hidden;
 }
@@ -98,15 +102,27 @@ onUnmounted(() => {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   min-height: var(--nav-size);
-  padding: 8px 8px max(8px, env(safe-area-inset-bottom));
+  padding: 8px 8px max(8px, var(--app-safe-bottom));
   background: rgba(255, 255, 255, 0.86);
   border-top: 1px solid var(--border);
   backdrop-filter: blur(24px);
   box-shadow: 0 -16px 40px rgba(49, 54, 78, 0.08);
+  transform: translateY(var(--keyboard-nav-offset));
+  transition: transform 0.18s ease, opacity 0.12s ease, visibility 0.12s ease, background 0.18s ease;
+  will-change: transform;
 }
 
 :root[data-theme='dark'] .bottom-nav {
   background: rgba(17, 19, 32, 0.9);
+}
+
+:root.keyboard-pending .bottom-nav,
+:root.keyboard-open .bottom-nav {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(calc(100% + max(8px, var(--app-safe-bottom))));
+  transition: none;
 }
 
 .bottom-link,
@@ -162,7 +178,7 @@ onUnmounted(() => {
   .side-nav {
     position: sticky;
     top: 0;
-    height: 100vh;
+    height: var(--app-viewport-height);
     display: flex;
     flex-direction: column;
     gap: 28px;

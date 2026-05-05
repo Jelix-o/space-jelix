@@ -151,6 +151,7 @@ import { useChatStore } from '@/stores/chat'
 import { useConfirm } from '@/composables/useConfirm'
 import { useToast } from '@/composables/useToast'
 import { useContextMenu } from '@/composables/useContextMenu'
+import { useNativeBackClose } from '@/composables/useNativeBackClose'
 
 const route = useRoute()
 const router = useRouter()
@@ -191,6 +192,14 @@ const pageTitle = computed(() => chat.currentSession?.title || '新对话')
 const currentModelLabel = computed(() => {
   const model = chat.models.find((item) => item.id === chat.selectedModelId)
   return model ? `${model.name} · ${model.provider}` : '默认模型'
+})
+
+useNativeBackClose(sheetVisible, () => {
+  sheetVisible.value = false
+})
+
+useNativeBackClose(promptOpen, () => {
+  promptOpen.value = false
 })
 
 onMounted(prepareRoute)
@@ -419,7 +428,7 @@ function sendQuick(message: string) {
 
 <style scoped>
 .session-shell {
-  height: 100dvh;
+  height: var(--app-viewport-height);
   display: grid;
   overflow: hidden;
 }
@@ -430,7 +439,7 @@ function sendQuick(message: string) {
 
 .chat-main {
   min-width: 0;
-  height: 100dvh;
+  height: var(--app-viewport-height);
   min-height: 0;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
@@ -708,7 +717,7 @@ function sendQuick(message: string) {
 
   .session-rail {
     min-width: 0;
-    height: 100dvh;
+    height: var(--app-viewport-height);
     display: grid;
     grid-template-rows: auto auto minmax(0, 1fr);
     gap: 16px;

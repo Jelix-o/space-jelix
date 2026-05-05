@@ -5,12 +5,20 @@ const config: CapacitorConfig = {
   appName: 'Space Jelix',
   webDir: 'dist',
   plugins: {
+    SystemBars: {
+      insetsHandling: 'css',
+      style: 'LIGHT',
+      hidden: false,
+      animation: 'NONE',
+    },
     StatusBar: {
-      backgroundColor: '#6d35f6',
-      style: 'DARK',
+      overlaysWebView: true,
+      backgroundColor: '#f7f4ff',
+      style: 'LIGHT',
     },
     Keyboard: {
       resize: 'none',
+      resizeOnFullScreen: false,
     },
   },
 };

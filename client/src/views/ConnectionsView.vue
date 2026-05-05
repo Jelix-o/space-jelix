@@ -122,6 +122,7 @@ import { Pencil, Plus, Search, Server, Terminal, TerminalSquare, Trash2, Upload,
 import AppSelect from '@/components/AppSelect.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import { useModalLock } from '@/composables/useModalLock'
+import { useNativeBackClose } from '@/composables/useNativeBackClose'
 import { useToast } from '@/composables/useToast'
 import { useConnectionsStore } from '@/stores/connections'
 import type { TerminalAuthType, TerminalConnectionInfo } from '@/types'
@@ -156,6 +157,7 @@ onMounted(() => {
 })
 
 useModalLock(modalOpen)
+useNativeBackClose(modalOpen, closeModal)
 
 function openCreate() {
   editingId.value = null

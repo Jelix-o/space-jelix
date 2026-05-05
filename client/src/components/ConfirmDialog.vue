@@ -27,6 +27,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { AlertTriangle, HelpCircle, XCircle } from 'lucide-vue-next'
+import { useNativeBackClose } from '@/composables/useNativeBackClose'
 
 const props = defineProps<{
   title: string
@@ -57,6 +58,8 @@ function cancel() {
   emit('update:show', false)
   emit('result', false)
 }
+
+useNativeBackClose(visible, cancel)
 </script>
 
 <style scoped>

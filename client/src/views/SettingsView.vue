@@ -65,7 +65,7 @@
         </article>
       </section>
 
-      <form v-if="activePanel === 'preferences'" class="settings-card glass-card" @submit.prevent="savePreferences">
+      <section v-if="activePanel === 'preferences'" class="settings-card glass-card">
         <section class="setting-section">
           <div class="section-title">
             <Palette :size="28" />
@@ -113,9 +113,7 @@
           <input v-model.number="settings.fontSize" class="font-range" type="range" min="14" max="20" step="1" />
         </section>
 
-        <button class="primary-btn save-btn"><Save :size="26" />保存设置</button>
-        <p v-if="saved" class="saved">设置已保存</p>
-      </form>
+      </section>
     </template>
 
     <Teleport to="body">
@@ -273,7 +271,6 @@ import {
   PlugZap,
   Plus,
   RefreshCw,
-  Save,
   Search,
   Settings,
   SlidersHorizontal,
@@ -287,10 +284,12 @@ import AppSelect from '@/components/AppSelect.vue'
 import { useToast } from '@/composables/useToast'
 import { useConfirm } from '@/composables/useConfirm'
 import { useModalLock } from '@/composables/useModalLock'
+import { useNativeBackClose } from '@/composables/useNativeBackClose'
 import ModelPicker from '@/components/ModelPicker.vue'
 import { useChatStore } from '@/stores/chat'
 import { useAppsStore } from '@/stores/apps'
 import { APP_CATEGORIES, PROVIDER_TYPES, type AppCategory, type AppInfo, type AppSettings, type ProviderInfo, type ProviderModel, type ProviderType, type ThemeMode } from '@/types'
+import { applyDocumentAppearance } from '@/utils/nativeAppearance'
 
 type PanelKey = 'index' | 'apps' | 'providers' | 'preferences'
 
@@ -301,7 +300,6 @@ const appsStore = useAppsStore()
 const toast = useToast()
 const { confirm } = useConfirm()
 const activePanel = ref<PanelKey>('index')
-const saved = ref(false)
 const submitting = ref(false)
 const modalError = ref('')
 
@@ -402,29 +400,17 @@ watch(settings, () => {
 
 const anyModalOpen = computed(() => appModalOpen.value || providerModalOpen.value)
 useModalLock(anyModalOpen)
+useNativeBackClose(appModalOpen, closeAppModal)
+useNativeBackClose(providerModalOpen, closeProviderModal)
 
 function openPanel(panel: PanelKey) {
   activePanel.value = panel
   router.replace({ query: panel === 'index' ? {} : { panel } })
 }
 
-function resolvedTheme() {
-  if (settings.theme !== 'auto') return settings.theme
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-}
-
 function applySettings() {
-  document.documentElement.dataset.theme = resolvedTheme()
-  document.documentElement.style.setProperty('--font-size', `${settings.fontSize}px`)
+  applyDocumentAppearance(settings.theme, settings.fontSize)
   chat.selectedModelId = settings.defaultModel
-}
-
-function savePreferences() {
-  settingsApi.save({ ...settings })
-  saved.value = true
-  window.setTimeout(() => {
-    saved.value = false
-  }, 1800)
 }
 
 async function loadApps() {
@@ -1135,16 +1121,6 @@ function providerTypeLabel(type: ProviderType) {
 .font-range {
   width: 100%;
   accent-color: var(--accent);
-}
-
-.save-btn {
-  min-height: 68px;
-}
-
-.saved {
-  text-align: center;
-  color: var(--success);
-  font-weight: 900;
 }
 
 @media (min-width: 1040px) {

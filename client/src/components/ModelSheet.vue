@@ -28,9 +28,11 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { Check, X } from 'lucide-vue-next'
+import { useNativeBackClose } from '@/composables/useNativeBackClose'
 
-defineProps<{
+const props = defineProps<{
   visible: boolean
   modelValue: string
   options: { value: string; label: string; subtitle?: string }[]
@@ -49,6 +51,8 @@ function select(value: string) {
   emit('update:modelValue', value)
   emit('update:visible', false)
 }
+
+useNativeBackClose(computed(() => props.visible), close)
 </script>
 
 <style scoped>

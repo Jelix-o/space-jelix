@@ -196,7 +196,7 @@ function goBack() {
 
 <style scoped>
 .terminal-shell {
-  height: 100dvh;
+  height: var(--app-viewport-height);
   display: grid;
   grid-template-rows: auto 1fr;
   overflow: hidden;

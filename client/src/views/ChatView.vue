@@ -127,6 +127,7 @@ import { useChatStore } from '@/stores/chat'
 import { useConfirm } from '@/composables/useConfirm'
 import { useToast } from '@/composables/useToast'
 import { useContextMenu } from '@/composables/useContextMenu'
+import { useNativeBackClose } from '@/composables/useNativeBackClose'
 
 const router = useRouter()
 const chat = useChatStore()
@@ -139,6 +140,10 @@ const editTitle = ref('')
 const promptOpen = ref(false)
 const promptSessionId = ref<string | null>(null)
 const promptText = ref('')
+
+useNativeBackClose(promptOpen, () => {
+  promptOpen.value = false
+})
 
 onMounted(() => {
   // If we already have cached sessions, show them immediately and refresh in background

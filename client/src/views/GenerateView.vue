@@ -64,6 +64,7 @@ import { Image, Sparkles, X } from 'lucide-vue-next'
 import AppSelect from '@/components/AppSelect.vue'
 import { imagesApi, providersApi } from '@/api'
 import { useToast } from '@/composables/useToast'
+import { useNativeBackClose } from '@/composables/useNativeBackClose'
 import type { GeneratedImage, ProviderInfo } from '@/types'
 
 const toast = useToast()
@@ -77,6 +78,10 @@ const images = ref<GeneratedImage[]>([])
 const loaded = ref(false)
 const preview = ref<string | null>(null)
 const providers = ref<ProviderInfo[]>([])
+
+useNativeBackClose(() => Boolean(preview.value), () => {
+  preview.value = null
+})
 
 const sizeOptions = [
   { value: '1024x1024', label: '1:1 正方形', subtitle: '1024x1024' },

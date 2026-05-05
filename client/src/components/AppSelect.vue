@@ -27,6 +27,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Check, ChevronDown } from 'lucide-vue-next'
+import { useNativeBackClose } from '@/composables/useNativeBackClose'
 
 export interface AppSelectOption {
   value: string
@@ -63,6 +64,10 @@ function toggleOpen() {
 function selectOption(value: string) {
   emit('update:modelValue', value)
   emit('change', value)
+  open.value = false
+}
+
+function close() {
   open.value = false
 }
 
@@ -128,6 +133,8 @@ watch(open, async (value) => {
   await nextTick()
   updatePosition()
 })
+
+useNativeBackClose(open, close)
 </script>
 
 <style scoped>

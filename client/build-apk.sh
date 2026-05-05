@@ -27,7 +27,7 @@ npm install
 
 # 构建前端
 echo "🔨 构建前端..."
-npx vite build
+npm run build
 
 # 同步到 Android
 echo "📱 同步到 Android..."
